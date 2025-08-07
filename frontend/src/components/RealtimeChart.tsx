@@ -131,63 +131,41 @@ export default function RealtimeChart({ currentAPY = 20.52 }: RealtimeChartProps
   const change = calculateChange();
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center shadow-lg">
-            <BarChart3 className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <h3 className="text-xl font-bold text-display">Performance Chart</h3>
-            <div className="flex items-center gap-3 text-sm">
-              <span className="text-muted font-medium">Current APY:</span>
-              <span className="font-bold text-success text-lg">{currentAPY}%</span>
-              {Math.abs(change) > 0 && (
-                <motion.span 
-                  className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold ${
-                    change >= 0 ? 'bg-success/10 text-success' : 'bg-error/10 text-error'
-                  }`}
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                >
-                  <TrendingUp className={`w-3 h-3 ${change < 0 ? 'rotate-180' : ''}`} />
-                  {Math.abs(change).toFixed(2)}%
-                </motion.span>
-              )}
-              <div className="status-dot status-dot-success">
-                <span className="text-xs font-medium">Live</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Timeframe Selector */}
-        <div className="flex bg-surface rounded-xl p-1 border border-border/50">
+    <div className="space-y-4">
+      {/* Robinhood-style timeframe selector */}
+      <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+        <div className="flex space-x-1">
           {timeframes.map((tf) => (
-            <motion.button
+            <button
               key={tf.value}
               onClick={() => setTimeframe(tf.value as any)}
-              className={`px-4 py-2 text-sm font-semibold rounded-lg transition-all ${
+              className={`px-3 py-1 text-sm font-medium rounded transition-colors ${
                 timeframe === tf.value
-                  ? 'bg-gradient-primary text-white shadow-lg'
-                  : 'text-muted hover:text-foreground hover:bg-background/50'
+                  ? 'text-gray-900 bg-gray-100'
+                  : 'text-gray-500 hover:text-gray-700'
               }`}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
             >
               {tf.label}
-            </motion.button>
+            </button>
           ))}
         </div>
+        
+        {/* Performance indicator */}
+        {Math.abs(change) > 0 && (
+          <div className={`text-sm font-medium ${
+            change >= 0 ? 'text-green-600' : 'text-red-600'
+          }`}>
+            {change >= 0 ? '+' : ''}{change.toFixed(2)}%
+          </div>
+        )}
       </div>
 
-      {/* Chart */}
+      {/* Chart - Robinhood Style */}
       <div className="h-80">
         {isLoading ? (
-          <div className="w-full h-full bg-surface rounded-lg flex items-center justify-center">
-            <div className="flex items-center gap-2 text-muted">
-              <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+          <div className="w-full h-full bg-gray-50 rounded-lg flex items-center justify-center">
+            <div className="flex items-center gap-2 text-gray-500">
+              <div className="w-4 h-4 border-2 border-green-500 border-t-transparent rounded-full animate-spin" />
               Loading chart data...
             </div>
           </div>
@@ -196,80 +174,45 @@ export default function RealtimeChart({ currentAPY = 20.52 }: RealtimeChartProps
             <AreaChart data={chartData}>
               <defs>
                 <linearGradient id="combinedGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#2563eb" stopOpacity={0.3}/>
-                  <stop offset="95%" stopColor="#2563eb" stopOpacity={0}/>
-                </linearGradient>
-                <linearGradient id="defindexGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.2}/>
-                  <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
-                </linearGradient>
-                <linearGradient id="soroswapGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#059669" stopOpacity={0.2}/>
-                  <stop offset="95%" stopColor="#059669" stopOpacity={0}/>
+                  <stop offset="5%" stopColor="#10b981" stopOpacity={0.15}/>
+                  <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
                 </linearGradient>
               </defs>
               
-              <CartesianGrid strokeDasharray="3 3" stroke="#e5e5e5" />
               <XAxis 
                 dataKey="time" 
                 axisLine={false}
                 tickLine={false}
-                tick={{ fontSize: 12, fill: '#737373' }}
+                tick={{ fontSize: 11, fill: '#9CA3AF' }}
+                hide={timeframe === '1h' || timeframe === '24h'}
               />
               <YAxis 
                 domain={['dataMin - 0.5', 'dataMax + 0.5']}
                 axisLine={false}
                 tickLine={false}
-                tick={{ fontSize: 12, fill: '#737373' }}
-                tickFormatter={(value) => `${value}%`}
+                tick={false}
+                width={0}
               />
-              <Tooltip content={<CustomTooltip />} />
               
               <Area
                 type="monotone"
                 dataKey="combined"
-                stroke="#2563eb"
-                strokeWidth={3}
+                stroke="#10b981"
+                strokeWidth={2}
                 fill="url(#combinedGradient)"
-                dot={{ fill: '#2563eb', strokeWidth: 2, r: 4 }}
-                activeDot={{ r: 6, stroke: '#2563eb', strokeWidth: 2 }}
-              />
-              
-              <Line
-                type="monotone"
-                dataKey="defindex"
-                stroke="#8b5cf6"
-                strokeWidth={2}
-                strokeDasharray="5 5"
                 dot={false}
-              />
-              
-              <Line
-                type="monotone"
-                dataKey="soroswap"
-                stroke="#059669"
-                strokeWidth={2}
-                strokeDasharray="5 5"
-                dot={false}
+                activeDot={{ r: 4, stroke: '#10b981', strokeWidth: 2, fill: '#fff' }}
               />
             </AreaChart>
           </ResponsiveContainer>
         )}
       </div>
 
-      {/* Legend */}
-      <div className="flex items-center justify-center gap-6">
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 bg-primary rounded-full" />
-          <span className="text-sm font-medium">Combined APY</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-1 bg-accent" />
-          <span className="text-sm text-muted">DeFindex</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-1 bg-success" />
-          <span className="text-sm text-muted">Soroswap</span>
+      {/* Current APY display */}
+      <div className="text-center pt-4 border-t border-gray-100">
+        <div className="text-sm text-gray-600">Current APY</div>
+        <div className="text-lg font-semibold text-green-600">
+          {currentAPY.toFixed(2)}%
         </div>
       </div>
 

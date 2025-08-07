@@ -150,6 +150,10 @@
     --neutral-900: #dde1e6;
     --neutral-950: #f6f8fa;
   }
+  
+  body {
+    background: #111827;
+  }
 }
 
 /* Base styles */
@@ -163,7 +167,7 @@ html {
 
 body {
   font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-  background: var(--background);
+  background: #f9fafb;
   color: var(--foreground);
   line-height: var(--line-height-4);
   -webkit-font-smoothing: antialiased;

@@ -19,8 +19,11 @@ import {
   ArrowDownCircle,
   Eye,
   EyeOff,
-  Zap
+  Zap,
+  Sparkles,
+  ArrowRight
 } from 'lucide-react';
+import Link from 'next/link';
 import DepositWithdraw from '../../components/DepositWithdraw';
 import RealtimeChart from '../../components/RealtimeChart';
 import TransactionHistory from '../../components/TransactionHistory';
@@ -153,16 +156,7 @@ export default function Dashboard() {
     fetchAPYData();
   };
 
-  if (isLoading && !apyData) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-muted">Loading your portfolio...</p>
-        </div>
-      </div>
-    );
-  }
+
 
   const portfolioValue = parseFloat(userBalance.replace(',', ''));
   const dailyChange = 47.82;
@@ -192,25 +186,18 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header - Stripe Style */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+      {/* Main Navigation - Matching Landing Page */}
+      <nav className="fixed top-0 w-full bg-white/95 backdrop-blur-lg border-b border-gray-200 z-50">
         <div className="max-w-6xl mx-auto px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center gap-8">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                  <BarChart3 className="w-4 h-4 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-xl font-bold text-gray-900">Yieldway</h1>
-                  <div className="hidden md:block">
-                    <span className="text-xs text-gray-500 uppercase tracking-wide">Portfolio Dashboard</span>
-                  </div>
-                </div>
+            <Link href="/" className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                <Sparkles className="w-4 h-4 text-white" />
               </div>
-            </div>
-            
-            <div className="flex items-center gap-4">
+              <span className="text-xl font-bold text-gray-900">Yieldway</span>
+            </Link>
+
+            <div className="flex items-center space-x-3">
               <button
                 onClick={handleRefresh}
                 disabled={isRefreshing}
@@ -241,6 +228,22 @@ export default function Dashboard() {
                   </>
                 )}
               </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* Dashboard Header */}
+      <header className="bg-white border-b border-gray-200 mt-16">
+        <div className="max-w-6xl mx-auto px-6 lg:px-8">
+          <div className="flex justify-between items-center h-12">
+            <div>
+              <h1 className="text-lg font-semibold text-gray-900">Portfolio Dashboard</h1>
+            </div>
+            <div className="text-xs text-gray-500">
+              {apyData?.lastUpdate && (
+                <span>Last updated: {apyData.lastUpdate.toLocaleTimeString()}</span>
+              )}
             </div>
           </div>
         </div>
@@ -420,90 +423,115 @@ export default function Dashboard() {
               </div>
                 </div>
                 
-            {/* Charts and Actions - Redesigned */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Charts and Actions - Robinhood Style */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Performance Chart */}
               <div className="lg:col-span-2">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5 }}
-                  className="card-elevated p-8"
+                  className="bg-white rounded-lg border border-gray-200 overflow-hidden"
                 >
-                  <div className="flex items-center justify-between mb-8">
-                  <div>
-                      <h3 className="text-xl font-bold text-display">Performance Chart</h3>
-                      <p className="text-muted">Real-time yield performance and historical data</p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="badge badge-success">
-                        <div className="status-dot status-dot-success" />
-                        Live
+                  {/* Robinhood-style header */}
+                  <div className="p-6 border-b border-gray-100">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-900">Portfolio Performance</h3>
+                        <p className="text-sm text-gray-600 mt-1">Past 30 days</p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1 px-2 py-1 bg-green-100 text-green-800 rounded-md text-xs font-medium">
+                          <div className="w-2 h-2 bg-green-500 rounded-full" />
+                          Live
+                        </div>
                       </div>
                     </div>
                   </div>
-                  <div className="h-80">
-                    <RealtimeChart currentAPY={apyData?.combined || 0} />
+
+                  {/* Chart area with Robinhood styling */}
+                  <div className="p-6">
+                    <div className="mb-6">
+                      <div className="text-3xl font-bold text-gray-900 mb-1">
+                        {balanceVisible 
+                          ? new Intl.NumberFormat('en-US', { 
+                              style: 'currency', 
+                              currency: 'USD' 
+                            }).format(portfolioValue)
+                          : '••••••'
+                        }
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="text-green-600 text-sm font-medium">
+                          +{new Intl.NumberFormat('en-US', { 
+                            style: 'currency', 
+                            currency: 'USD' 
+                          }).format(dailyChange)} ({((dailyChange / portfolioValue) * 100).toFixed(2)}%)
+                        </div>
+                        <div className="text-xs text-gray-500">Today</div>
+                      </div>
+                    </div>
+                    <div className="h-80">
+                      <RealtimeChart currentAPY={apyData?.combined || 0} />
+                    </div>
                   </div>
                 </motion.div>
-                  </div>
+              </div>
                   
-              {/* Quick Actions and Allocation */}
-              <div className="space-y-6">
+              {/* Quick Actions and Allocation - Robinhood Style */}
+              <div className="space-y-4">
+                {/* Quick Actions */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.6 }}
-                  className="card-elevated p-6"
+                  className="bg-white rounded-lg border border-gray-200 p-6"
                 >
-                  <h3 className="text-lg font-bold text-display mb-6">Quick Actions</h3>
-                  <div className="space-y-4">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+                  <div className="space-y-3">
                     <button
                       onClick={() => {/* Handle deposit */}}
-                      className="btn btn-primary w-full group"
+                      className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors"
                     >
-                      <Wallet className="w-4 h-4" />
-                      Deposit Funds
-                      <ArrowUpCircle className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      <ArrowUpCircle className="w-4 h-4" />
+                      Deposit
                     </button>
                     <button
                       onClick={() => {/* Handle withdraw */}}
-                      className="btn btn-secondary w-full group"
+                      className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-white text-gray-700 font-medium rounded-lg border border-gray-300 hover:border-gray-400 hover:bg-gray-50 transition-colors"
                     >
                       <ArrowDownCircle className="w-4 h-4" />
                       Withdraw
-                      <TrendingDown className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </button>
                     <button
                       onClick={() => {/* Handle rebalance */}}
-                      className="btn btn-ghost w-full group"
+                      className="w-full flex items-center justify-center gap-2 py-2 px-4 text-green-600 font-medium text-sm hover:bg-green-50 rounded-lg transition-colors"
                     >
                       <RefreshCw className="w-4 h-4" />
-                      Auto Rebalance
-                      <Zap className="w-4 h-4 group-hover:rotate-12 transition-transform" />
+                      Auto-Rebalance
                     </button>
                   </div>
                 </motion.div>
 
-                {/* Enhanced Allocation Chart */}
+                {/* Holdings - Robinhood Style */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.7 }}
-                  className="card-elevated p-6"
+                  className="bg-white rounded-lg border border-gray-200 p-6"
                 >
-                  <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-lg font-bold text-display">Portfolio Allocation</h3>
-                    <PieChart className="w-5 h-5 text-muted" />
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold text-gray-900">Holdings</h3>
+                    <div className="text-xs text-gray-500">Live</div>
                   </div>
                   
-                  <div className="space-y-6">
-                    {/* Visual allocation bar */}
-                    <div className="flex h-4 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                  <div className="space-y-4">
+                    {/* Visual allocation */}
+                    <div className="flex h-2 bg-gray-100 rounded-full overflow-hidden">
                       {allocations.map((allocation, index) => (
                         <motion.div
                           key={allocation.protocol}
-                          className={`h-full ${allocation.color === 'bg-primary' ? 'bg-gradient-primary' : 'bg-gradient-success'}`}
+                          className={`h-full ${allocation.protocol === 'DeFindex' ? 'bg-green-500' : 'bg-blue-500'}`}
                           style={{ width: `${allocation.percentage}%` }}
                           initial={{ width: 0 }}
                           animate={{ width: `${allocation.percentage}%` }}
@@ -512,35 +540,91 @@ export default function Dashboard() {
                       ))}
                     </div>
                     
-                    {/* Allocation details */}
-                    <div className="space-y-4">
+                    {/* Holdings list */}
+                    <div className="space-y-3">
                       {allocations.map((allocation, index) => (
                         <motion.div 
                           key={allocation.protocol} 
-                          className="flex items-center justify-between p-3 bg-surface rounded-lg"
+                          className="flex items-center justify-between py-2"
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: 1 + index * 0.1 }}
                         >
                           <div className="flex items-center gap-3">
-                            <div className={`w-3 h-3 rounded-full ${allocation.color === 'bg-primary' ? 'bg-gradient-primary' : 'bg-gradient-success'}`} />
-                            <span className="font-medium">{allocation.protocol}</span>
+                            <div className={`w-3 h-3 rounded-full ${allocation.protocol === 'DeFindex' ? 'bg-green-500' : 'bg-blue-500'}`} />
+                            <div>
+                              <div className="font-medium text-gray-900 text-sm">{allocation.protocol}</div>
+                              <div className="text-xs text-gray-500">{allocation.apy.toFixed(2)}% APY</div>
+                            </div>
                           </div>
                           <div className="text-right">
-                            <div className="font-bold text-lg">{allocation.percentage}%</div>
-                            <div className="text-xs text-muted">{allocation.apy}% APY</div>
+                            <div className="font-semibold text-gray-900">{allocation.percentage}%</div>
+                            <div className="text-xs text-gray-500">
+                              {new Intl.NumberFormat('en-US', { 
+                                style: 'currency', 
+                                currency: 'USD',
+                                maximumFractionDigits: 0
+                              }).format(portfolioValue * allocation.percentage / 100)}
+                            </div>
                           </div>
                         </motion.div>
                       ))}
-                </div>
+                    </div>
 
-                    {/* Total weighted APY */}
-                    <div className="pt-4 border-t border-border">
-                      <div className="flex justify-between items-center p-4 bg-gradient-to-br from-primary/5 to-accent/5 rounded-lg border border-primary/20">
-                        <span className="font-semibold">Combined Weighted APY</span>
-                        <span className="text-2xl font-bold gradient-text">
+                    {/* Total APY */}
+                    <div className="pt-3 border-t border-gray-100">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium text-gray-600">Combined APY</span>
+                        <span className="text-lg font-bold text-green-600">
                           {allocations.reduce((acc, curr) => acc + (curr.percentage * curr.apy / 100), 0).toFixed(2)}%
                         </span>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* Today's Movement - Robinhood signature feature */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8 }}
+                  className="bg-white rounded-lg border border-gray-200 p-6"
+                >
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Today</h3>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600">Portfolio Value</span>
+                      <span className="font-medium text-gray-900">
+                        {new Intl.NumberFormat('en-US', { 
+                          style: 'currency', 
+                          currency: 'USD' 
+                        }).format(portfolioValue)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600">Today's Return</span>
+                      <div className="text-right">
+                        <div className="font-medium text-green-600">
+                          +{new Intl.NumberFormat('en-US', { 
+                            style: 'currency', 
+                            currency: 'USD' 
+                          }).format(dailyChange)}
+                        </div>
+                        <div className="text-xs text-green-600">
+                          +{((dailyChange / portfolioValue) * 100).toFixed(2)}%
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600">Total Return</span>
+                      <div className="text-right">
+                        <div className="font-medium text-green-600">
+                          +{new Intl.NumberFormat('en-US', { 
+                            style: 'currency', 
+                            currency: 'USD' 
+                          }).format(monthlyYield * 6)}
+                        </div>
+                        <div className="text-xs text-green-600">+15.3%</div>
                       </div>
                     </div>
                   </div>
@@ -548,16 +632,16 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* Enhanced Deposit/Withdraw Component */}
+            {/* Robinhood-style Transaction Interface */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8 }}
-              className="card-elevated p-8"
+              className="bg-white rounded-lg border border-gray-200 p-6"
             >
-              <div className="mb-8">
-                <h3 className="text-xl font-bold text-display mb-2">Manage Position</h3>
-                <p className="text-muted">Deposit or withdraw funds from your portfolio with instant execution</p>
+              <div className="mb-6">
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">Trade</h3>
+                <p className="text-gray-600">Buy and sell DeFi yield positions</p>
               </div>
               <DepositWithdraw 
                 isWalletConnected={isWalletConnected}
@@ -569,31 +653,31 @@ export default function Dashboard() {
         )}
 
         {activeView === 'allocations' && apyData && (
-          <div className="space-y-8">
+          <div className="space-y-6">
             <div>
-              <h1 className="text-3xl font-bold text-display mb-2">Protocol Allocations</h1>
-              <p className="text-muted">Detailed breakdown of current protocol distribution and performance</p>
-                  </div>
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">Holdings</h1>
+              <p className="text-gray-600">Your DeFi protocol positions and allocations</p>
+            </div>
                   
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* Enhanced Allocation Visualization */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Portfolio Distribution - Robinhood Style */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="card-elevated p-8"
+                className="bg-white rounded-lg border border-gray-200 p-6"
               >
-                <div className="flex items-center justify-between mb-8">
-                  <h3 className="text-xl font-bold text-display">Portfolio Distribution</h3>
-                  <PieChart className="w-6 h-6 text-muted" />
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-lg font-semibold text-gray-900">Portfolio Distribution</h3>
+                  <PieChart className="w-5 h-5 text-gray-400" />
                 </div>
                 
                 <div className="space-y-6">
-                  {/* Enhanced visual allocation */}
-                  <div className="flex h-6 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden shadow-inner">
+                  {/* Visual allocation */}
+                  <div className="flex h-3 bg-gray-100 rounded-full overflow-hidden">
                     {allocations.map((allocation, index) => (
                       <motion.div
                         key={allocation.protocol}
-                        className={`h-full ${allocation.color === 'bg-primary' ? 'bg-gradient-primary' : 'bg-gradient-success'}`}
+                        className={`h-full ${allocation.protocol === 'DeFindex' ? 'bg-green-500' : 'bg-blue-500'}`}
                         style={{ width: `${allocation.percentage}%` }}
                         initial={{ width: 0 }}
                         animate={{ width: `${allocation.percentage}%` }}
@@ -603,25 +687,25 @@ export default function Dashboard() {
                   </div>
                   
                   {/* Protocol details */}
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     {allocations.map((allocation, index) => (
                       <motion.div 
                         key={allocation.protocol} 
-                        className="flex items-center justify-between p-4 bg-surface rounded-xl border border-border hover:border-primary/30 transition-colors"
+                        className="flex items-center justify-between py-3 px-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.5 + index * 0.2 }}
                       >
-                        <div className="flex items-center gap-4">
-                          <div className={`w-4 h-4 rounded-full ${allocation.color === 'bg-primary' ? 'bg-gradient-primary' : 'bg-gradient-success'} shadow-sm`} />
+                        <div className="flex items-center gap-3">
+                          <div className={`w-3 h-3 rounded-full ${allocation.protocol === 'DeFindex' ? 'bg-green-500' : 'bg-blue-500'}`} />
                           <div>
-                            <span className="font-semibold">{allocation.protocol}</span>
-                            <div className="text-xs text-muted">Active Protocol</div>
+                            <div className="font-medium text-gray-900 text-sm">{allocation.protocol}</div>
+                            <div className="text-xs text-gray-500">Active Protocol</div>
                           </div>
                         </div>
                         <div className="text-right">
-                          <div className="font-bold text-xl">{allocation.percentage}%</div>
-                          <div className="text-xs text-muted">Allocation</div>
+                          <div className="font-semibold text-gray-900">{allocation.percentage}%</div>
+                          <div className="text-xs text-gray-500">Allocation</div>
                         </div>
                       </motion.div>
                     ))}
@@ -629,41 +713,41 @@ export default function Dashboard() {
                 </div>
               </motion.div>
               
-              {/* Protocol Performance */}
+              {/* Protocol Performance - Robinhood Style */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="card-elevated p-8"
+                className="bg-white rounded-lg border border-gray-200 p-6"
               >
-                <h3 className="text-xl font-bold text-display mb-8">Protocol Performance</h3>
-                <div className="space-y-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-6">Protocol Performance</h3>
+                <div className="space-y-4">
                   {allocations.map((allocation, index) => (
                     <motion.div 
                       key={allocation.protocol}
-                      className="metric-card bg-gradient-to-br from-surface to-surface/50"
+                      className="p-4 bg-gray-50 rounded-lg border border-gray-100"
                       initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: 0.6 + index * 0.2 }}
                     >
                       <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-3">
-                          <div className={`w-3 h-3 rounded-full ${allocation.color === 'bg-primary' ? 'bg-gradient-primary' : 'bg-gradient-success'}`} />
-                          <span className="font-semibold">{allocation.protocol}</span>
+                        <div className="flex items-center gap-3">
+                          <div className={`w-3 h-3 rounded-full ${allocation.protocol === 'DeFindex' ? 'bg-green-500' : 'bg-blue-500'}`} />
+                          <span className="font-medium text-gray-900">{allocation.protocol}</span>
                         </div>
-                        <div className="badge badge-success">
+                        <div className="flex items-center gap-1 px-2 py-1 bg-green-100 text-green-800 rounded-md text-xs font-medium">
                           <TrendingUp className="w-3 h-3" />
                           Active
                         </div>
                       </div>
                       <div className="flex items-end justify-between">
                         <div>
-                          <div className="text-2xl font-bold gradient-text-success">{allocation.apy}%</div>
-                          <div className="text-caption">Current APY</div>
-                      </div>
-                      <div className="text-right">
-                          <div className="text-lg font-bold">{allocation.percentage}%</div>
-                          <div className="text-caption">Portfolio Share</div>
+                          <div className="text-xl font-bold text-green-600">{allocation.apy.toFixed(2)}%</div>
+                          <div className="text-xs text-gray-500">Current APY</div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-lg font-semibold text-gray-900">{allocation.percentage}%</div>
+                          <div className="text-xs text-gray-500">Portfolio Share</div>
                         </div>
                       </div>
                     </motion.div>
@@ -671,15 +755,15 @@ export default function Dashboard() {
                   
                   {/* Combined Performance Summary */}
                   <motion.div 
-                    className="p-6 bg-gradient-primary rounded-2xl text-white"
+                    className="p-6 bg-green-600 rounded-lg text-white mt-6"
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 1.2 }}
                   >
                     <div className="text-center">
-                      <div className="text-caption text-white/80 mb-2">Combined Weighted APY</div>
-                      <div className="text-4xl font-bold mb-2">{apyData.combined}%</div>
-                      <div className="text-sm text-white/80">Optimized allocation performance</div>
+                      <div className="text-green-100 text-sm mb-2">Combined Weighted APY</div>
+                      <div className="text-3xl font-bold mb-1">{apyData.combined.toFixed(2)}%</div>
+                      <div className="text-sm text-green-100">Optimized allocation performance</div>
                     </div>
                   </motion.div>
                 </div>
@@ -689,15 +773,15 @@ export default function Dashboard() {
         )}
 
         {activeView === 'transactions' && (
-          <div className="space-y-8">
+          <div className="space-y-6">
             <div>
-              <h1 className="text-3xl font-bold text-display mb-2">Transaction History</h1>
-              <p className="text-muted">Complete record of portfolio activity and performance</p>
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">Activity</h1>
+              <p className="text-gray-600">Your transaction history and portfolio activity</p>
             </div>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="card-elevated p-8"
+              className="bg-white rounded-lg border border-gray-200"
             >
               <TransactionHistory />
             </motion.div>
@@ -705,76 +789,76 @@ export default function Dashboard() {
         )}
 
         {activeView === 'analytics' && apyData && (
-          <div className="space-y-8">
+          <div className="space-y-6">
             <div>
-              <h1 className="text-3xl font-bold text-display mb-2">Portfolio Analytics</h1>
-              <p className="text-muted">Detailed performance metrics, risk analysis, and insights</p>
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">Analytics</h1>
+              <p className="text-gray-600">Detailed performance metrics and portfolio insights</p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Enhanced Performance Chart */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Performance Chart - Robinhood Style */}
               <div className="lg:col-span-2">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="card-elevated p-8"
+                  className="bg-white rounded-lg border border-gray-200 p-6"
                 >
-                  <div className="flex items-center justify-between mb-8">
+                  <div className="flex items-center justify-between mb-6">
                     <div>
-                      <h3 className="text-xl font-bold text-display">Performance Analytics</h3>
-                      <p className="text-muted">Historical performance and trend analysis</p>
+                      <h3 className="text-lg font-semibold text-gray-900">Performance Analytics</h3>
+                      <p className="text-sm text-gray-600">Historical performance and trend analysis</p>
                     </div>
-                    <div className="badge badge-success">
+                    <div className="flex items-center gap-1 px-2 py-1 bg-green-100 text-green-800 rounded-md text-xs font-medium">
                       <TrendingUp className="w-3 h-3" />
                       Live Data
                     </div>
                   </div>
-                  <div className="h-96">
+                  <div className="h-80">
                     <RealtimeChart currentAPY={apyData.combined} />
                   </div>
                 </motion.div>
               </div>
               
-              {/* Enhanced Metrics Sidebar */}
-              <div className="space-y-6">
+              {/* Risk Metrics Sidebar - Robinhood Style */}
+              <div className="space-y-4">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
-                  className="card-elevated p-6"
+                  className="bg-white rounded-lg border border-gray-200 p-6"
                 >
-                  <h3 className="text-lg font-bold text-display mb-6">Risk Metrics</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Risk Metrics</h3>
                   <div className="space-y-4">
-                    <div className="metric-card bg-gradient-to-br from-surface to-surface/50">
+                    <div className="p-4 bg-gray-50 rounded-lg border border-gray-100">
                       <div className="flex items-center justify-between">
                         <div>
-                          <div className="text-caption">Sharpe Ratio</div>
-                          <div className="text-2xl font-bold">2.84</div>
+                          <div className="text-xs text-gray-500">Sharpe Ratio</div>
+                          <div className="text-xl font-bold text-gray-900">2.84</div>
                         </div>
-                        <div className="w-8 h-8 bg-gradient-success rounded-lg flex items-center justify-center">
-                          <TrendingUp className="w-4 h-4 text-white" />
+                        <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                          <TrendingUp className="w-4 h-4 text-green-600" />
                         </div>
                       </div>
                     </div>
-                    <div className="metric-card bg-gradient-to-br from-surface to-surface/50">
+                    <div className="p-4 bg-gray-50 rounded-lg border border-gray-100">
                       <div className="flex items-center justify-between">
                         <div>
-                          <div className="text-caption">Max Drawdown</div>
-                          <div className="text-2xl font-bold text-success">-3.2%</div>
+                          <div className="text-xs text-gray-500">Max Drawdown</div>
+                          <div className="text-xl font-bold text-green-600">-3.2%</div>
                         </div>
-                        <div className="w-8 h-8 bg-gradient-success rounded-lg flex items-center justify-center">
-                          <TrendingDown className="w-4 h-4 text-white" />
+                        <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                          <TrendingDown className="w-4 h-4 text-green-600" />
                         </div>
                       </div>
                     </div>
-                    <div className="metric-card bg-gradient-to-br from-surface to-surface/50">
+                    <div className="p-4 bg-gray-50 rounded-lg border border-gray-100">
                       <div className="flex items-center justify-between">
                         <div>
-                          <div className="text-caption">Volatility</div>
-                          <div className="text-2xl font-bold">15.7%</div>
+                          <div className="text-xs text-gray-500">Volatility</div>
+                          <div className="text-xl font-bold text-gray-900">15.7%</div>
                         </div>
-                        <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
-                          <Activity className="w-4 h-4 text-white" />
+                        <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                          <Activity className="w-4 h-4 text-blue-600" />
                         </div>
                       </div>
                     </div>
@@ -785,42 +869,42 @@ export default function Dashboard() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4 }}
-                  className="card-elevated p-6"
+                  className="bg-white rounded-lg border border-gray-200 p-6"
                 >
-                  <h3 className="text-lg font-bold text-display mb-6">Liquidity Metrics</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Liquidity Metrics</h3>
                   <div className="space-y-4">
-                    <div className="metric-card bg-gradient-to-br from-surface to-surface/50">
+                    <div className="p-4 bg-gray-50 rounded-lg border border-gray-100">
                       <div className="flex items-center justify-between">
                         <div>
-                          <div className="text-caption">Total TVL</div>
-                          <div className="text-2xl font-bold">
+                          <div className="text-xs text-gray-500">Total TVL</div>
+                          <div className="text-xl font-bold text-gray-900">
                             ${(apyData.soroswap.totalLiquidity / 1000000).toFixed(1)}M
                           </div>
                         </div>
-                        <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
-                          <DollarSign className="w-4 h-4 text-white" />
+                        <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                          <DollarSign className="w-4 h-4 text-blue-600" />
                         </div>
                       </div>
                     </div>
-                    <div className="metric-card bg-gradient-to-br from-surface to-surface/50">
+                    <div className="p-4 bg-gray-50 rounded-lg border border-gray-100">
                       <div className="flex items-center justify-between">
                         <div>
-                          <div className="text-caption">Withdrawal Time</div>
-                          <div className="text-2xl font-bold text-success">&lt; 30s</div>
+                          <div className="text-xs text-gray-500">Withdrawal Time</div>
+                          <div className="text-xl font-bold text-green-600">&lt; 30s</div>
                         </div>
-                        <div className="w-8 h-8 bg-gradient-success rounded-lg flex items-center justify-center">
-                          <Zap className="w-4 h-4 text-white" />
+                        <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                          <Zap className="w-4 h-4 text-green-600" />
                         </div>
                       </div>
                     </div>
-                    <div className="metric-card bg-gradient-to-br from-surface to-surface/50">
+                    <div className="p-4 bg-gray-50 rounded-lg border border-gray-100">
                       <div className="flex items-center justify-between">
                         <div>
-                          <div className="text-caption">Avg Slippage</div>
-                          <div className="text-2xl font-bold text-success">0.1%</div>
+                          <div className="text-xs text-gray-500">Avg Slippage</div>
+                          <div className="text-xl font-bold text-green-600">0.1%</div>
                         </div>
-                        <div className="w-8 h-8 bg-gradient-success rounded-lg flex items-center justify-center">
-                          <TrendingUp className="w-4 h-4 text-white" />
+                        <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                          <TrendingUp className="w-4 h-4 text-green-600" />
                         </div>
                       </div>
                     </div>

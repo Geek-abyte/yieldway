@@ -101,18 +101,18 @@ export default function TransactionHistory({ userAddress }: TransactionHistoryPr
   }, [userAddress]);
 
   const getTransactionIcon = (type: string, status: string) => {
-    if (status === 'pending') return <Clock className="w-5 h-5 text-warning" />;
-    if (status === 'failed') return <AlertCircle className="w-5 h-5 text-error" />;
+    if (status === 'pending') return <Clock className="w-5 h-5 text-yellow-500" />;
+    if (status === 'failed') return <AlertCircle className="w-5 h-5 text-red-500" />;
     
     switch (type) {
       case 'deposit':
-        return <ArrowDownCircle className="w-5 h-5 text-success" />;
+        return <ArrowDownCircle className="w-5 h-5 text-green-600" />;
       case 'withdraw':
-        return <ArrowUpCircle className="w-5 h-5 text-error" />;
+        return <ArrowUpCircle className="w-5 h-5 text-red-500" />;
       case 'rebalance':
-        return <RefreshCw className="w-5 h-5 text-primary" />;
+        return <RefreshCw className="w-5 h-5 text-blue-600" />;
       default:
-        return <CheckCircle className="w-5 h-5 text-success" />;
+        return <CheckCircle className="w-5 h-5 text-green-600" />;
     }
   };
 
@@ -121,13 +121,13 @@ export default function TransactionHistory({ userAddress }: TransactionHistoryPr
     
     switch (status) {
       case 'success':
-        return <span className={`${baseClasses} bg-success/10 text-success`}>Success</span>;
+        return <span className={`${baseClasses} bg-green-100 text-green-800`}>Success</span>;
       case 'pending':
-        return <span className={`${baseClasses} bg-warning/10 text-warning`}>Pending</span>;
+        return <span className={`${baseClasses} bg-yellow-100 text-yellow-800`}>Pending</span>;
       case 'failed':
-        return <span className={`${baseClasses} bg-error/10 text-error`}>Failed</span>;
+        return <span className={`${baseClasses} bg-red-100 text-red-800`}>Failed</span>;
       default:
-        return <span className={`${baseClasses} bg-gray-100 dark:bg-gray-800 text-muted`}>Unknown</span>;
+        return <span className={`${baseClasses} bg-gray-100 text-gray-600`}>Unknown</span>;
     }
   };
 
@@ -163,47 +163,41 @@ export default function TransactionHistory({ userAddress }: TransactionHistoryPr
   ];
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
+    <div className="space-y-6 p-6">
+      {/* Header - Robinhood Style */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center shadow-lg">
-            <History className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <h3 className="text-xl font-bold text-display">Transaction History</h3>
-            <p className="text-sm text-muted font-medium">Track all your portfolio activity</p>
-          </div>
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900">Recent Activity</h3>
+          <p className="text-sm text-gray-600">Track all your portfolio transactions</p>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="status-dot status-dot-success">
-            <span className="text-xs font-medium">Live</span>
-          </div>
+        <div className="flex items-center gap-1 px-2 py-1 bg-green-100 text-green-800 rounded-md text-xs font-medium">
+          <div className="w-2 h-2 bg-green-500 rounded-full" />
+          Live
         </div>
       </div>
 
-      {/* Filters and Search */}
+      {/* Filters and Search - Robinhood Style */}
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="relative flex-1 group">
-          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted group-focus-within:text-primary transition-colors" />
+          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-blue-600 transition-colors" />
           <input
             type="text"
             placeholder="Search transactions..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="input input-lg pl-12"
+            className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
         
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
-            <Filter className="w-5 h-5 text-muted" />
-            <span className="text-sm font-medium text-muted">Filter:</span>
+            <Filter className="w-5 h-5 text-gray-400" />
+            <span className="text-sm font-medium text-gray-600">Filter:</span>
           </div>
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value as any)}
-            className="input w-auto min-w-36 font-medium"
+            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-w-36 font-medium"
           >
             {filterOptions.map(option => (
               <option key={option.value} value={option.value}>
@@ -214,32 +208,32 @@ export default function TransactionHistory({ userAddress }: TransactionHistoryPr
         </div>
       </div>
 
-      {/* Transaction List */}
+      {/* Transaction List - Robinhood Style */}
       {isLoading ? (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {[...Array(5)].map((_, i) => (
-            <div key={i} className="card p-6 animate-pulse">
+            <div key={i} className="bg-white rounded-lg border border-gray-200 p-6 animate-pulse">
               <div className="flex items-center gap-4">
-                              <div className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-full" />
-              <div className="flex-1 space-y-2">
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/4" />
-                <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/3" />
-              </div>
-              <div className="space-y-2">
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-20" />
-                <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-16" />
+                <div className="w-10 h-10 bg-gray-200 rounded-full" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-4 bg-gray-200 rounded w-1/4" />
+                  <div className="h-3 bg-gray-200 rounded w-1/3" />
+                </div>
+                <div className="space-y-2">
+                  <div className="h-4 bg-gray-200 rounded w-20" />
+                  <div className="h-3 bg-gray-200 rounded w-16" />
                 </div>
               </div>
             </div>
           ))}
         </div>
       ) : filteredTransactions.length === 0 ? (
-        <div className="card p-12 text-center">
-          <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
-            <History className="w-8 h-8 text-muted" />
+        <div className="bg-white rounded-lg border border-gray-200 p-12 text-center">
+          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <History className="w-8 h-8 text-gray-400" />
           </div>
-          <h3 className="text-lg font-semibold mb-2">No transactions found</h3>
-          <p className="text-muted">
+          <h3 className="text-lg font-semibold mb-2 text-gray-900">No transactions found</h3>
+          <p className="text-gray-600">
             {searchTerm || filter !== 'all' 
               ? 'Try adjusting your search or filter criteria'
               : 'Your transaction history will appear here once you start using the platform'
@@ -247,14 +241,14 @@ export default function TransactionHistory({ userAddress }: TransactionHistoryPr
           </p>
         </div>
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-3">
           {filteredTransactions.map((transaction, index) => (
             <motion.div
               key={transaction.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}
-              className="card-interactive p-6 group"
+              className="bg-white rounded-lg border border-gray-200 p-6 group hover:shadow-md transition-shadow"
               whileHover={{ scale: 1.01 }}
             >
               <div className="flex items-center gap-4">
@@ -270,7 +264,7 @@ export default function TransactionHistory({ userAddress }: TransactionHistoryPr
                     {getStatusBadge(transaction.status)}
                   </div>
                   
-                  <div className="flex items-center gap-4 text-sm text-muted">
+                  <div className="flex items-center gap-4 text-sm text-gray-500">
                     <span>{formatTimestamp(transaction.timestamp)}</span>
                     <span>Fee: {transaction.gasCost}</span>
                   </div>
@@ -278,16 +272,16 @@ export default function TransactionHistory({ userAddress }: TransactionHistoryPr
                 
                 <div className="text-right">
                   <div className={`font-bold text-xl ${
-                    transaction.type === 'withdraw' ? 'text-error' : 'text-success'
+                    transaction.type === 'withdraw' ? 'text-red-500' : 'text-green-600'
                   }`}>
                     {transaction.type === 'withdraw' ? '-' : '+'}${transaction.amount}
                   </div>
-                  <div className="text-sm text-muted font-medium">{transaction.asset}</div>
+                  <div className="text-sm text-gray-500 font-medium">{transaction.asset}</div>
                 </div>
                 
                 <motion.button 
                   onClick={() => window.open(`https://stellar.expert/explorer/public/tx/${transaction.txHash}`, '_blank')}
-                  className="btn btn-ghost btn-sm p-3 opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="p-2 text-gray-400 hover:text-gray-600 opacity-0 group-hover:opacity-100 transition-all"
                   title="View on Stellar Explorer"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
@@ -297,12 +291,12 @@ export default function TransactionHistory({ userAddress }: TransactionHistoryPr
               </div>
               
               {/* Transaction Hash */}
-              <div className="mt-4 pt-4 border-t border-border">
+              <div className="mt-4 pt-4 border-t border-gray-200">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted">Transaction Hash:</span>
+                  <span className="text-gray-500">Transaction Hash:</span>
                   <button
                     onClick={() => navigator.clipboard.writeText(transaction.txHash)}
-                    className="font-mono text-muted hover:text-foreground transition-colors"
+                    className="font-mono text-gray-500 hover:text-gray-900 transition-colors"
                     title="Click to copy"
                   >
                     {transaction.txHash}
@@ -317,7 +311,7 @@ export default function TransactionHistory({ userAddress }: TransactionHistoryPr
       {/* Load More Button (for future pagination) */}
       {filteredTransactions.length > 0 && (
         <div className="text-center">
-          <button className="btn btn-secondary">
+          <button className="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium">
             Load More Transactions
           </button>
         </div>

@@ -80,14 +80,14 @@ export default function DepositWithdraw({
 
   return (
     <div className="space-y-6">
-      {/* Transaction Type Toggle */}
-      <div className="flex bg-surface rounded-xl p-1 border border-border/50">
+      {/* Transaction Type Toggle - Robinhood Style */}
+      <div className="flex bg-gray-100 rounded-lg p-1">
         <motion.button
           onClick={() => setTransactionType('deposit')}
-          className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg transition-all font-medium ${
+          className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-md transition-all font-medium ${
             transactionType === 'deposit'
-              ? 'bg-gradient-primary text-white shadow-lg'
-              : 'text-muted hover:text-foreground hover:bg-background/50'
+              ? 'bg-white text-gray-900 shadow-sm'
+              : 'text-gray-600 hover:text-gray-900'
           }`}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
@@ -97,10 +97,10 @@ export default function DepositWithdraw({
         </motion.button>
         <motion.button
           onClick={() => setTransactionType('withdraw')}
-          className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg transition-all font-medium ${
+          className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-md transition-all font-medium ${
             transactionType === 'withdraw'
-              ? 'bg-gradient-primary text-white shadow-lg'
-              : 'text-muted hover:text-foreground hover:bg-background/50'
+              ? 'bg-white text-gray-900 shadow-sm'
+              : 'text-gray-600 hover:text-gray-900'
           }`}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
@@ -114,14 +114,14 @@ export default function DepositWithdraw({
       <div className="space-y-4">
         <div>
           <div className="flex items-center justify-between mb-3">
-            <label className="text-sm font-semibold text-foreground">
+            <label className="text-sm font-semibold text-gray-900">
               Amount (USDC)
             </label>
             {transactionType === 'withdraw' && (
               <div className="flex items-center gap-2">
-                <Wallet className="w-4 h-4 text-muted" />
-                <span className="text-sm text-muted font-medium">
-                  Available: <span className="text-foreground font-semibold">${availableBalance.toLocaleString()}</span>
+                <Wallet className="w-4 h-4 text-gray-400" />
+                <span className="text-sm text-gray-600 font-medium">
+                  Available: <span className="text-gray-900 font-semibold">${availableBalance.toLocaleString()}</span>
                 </span>
               </div>
             )}
@@ -129,14 +129,14 @@ export default function DepositWithdraw({
           
           <div className="relative group">
             <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
-              <DollarSign className="w-5 h-5 text-muted group-focus-within:text-primary transition-colors" />
+              <DollarSign className="w-5 h-5 text-gray-400 group-focus-within:text-blue-600 transition-colors" />
             </div>
             <input
               type="number"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               placeholder="0.00"
-              className="input input-lg pl-12 text-xl font-semibold text-center"
+              className="w-full pl-12 pr-4 py-3 text-xl font-semibold text-center border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               disabled={status === 'pending'}
             />
           </div>
