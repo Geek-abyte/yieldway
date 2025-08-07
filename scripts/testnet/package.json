@@ -1,0 +1,17 @@
+{
+  "name": "yieldway-testnet-scripts",
+  "version": "1.0.0",
+  "description": "Testnet setup and deployment scripts for Yieldway",
+  "main": "setup-accounts.js",
+  "scripts": {
+    "setup": "node setup-accounts.js",
+    "deploy": "node deploy-contracts.js",
+    "verify": "node verify-deployment.js"
+  },
+  "dependencies": {
+    "@stellar/stellar-sdk": "^11.3.0",
+    "dotenv": "^16.0.0",
+    "axios": "^1.6.0"
+  }
+}
+ 

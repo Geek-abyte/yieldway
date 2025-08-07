@@ -1,0 +1,46 @@
+{
+  "name": "yieldway",
+  "version": "0.1.0",
+  "description": "Cross-Chain Yield Aggregator for Stellar - Optimizing returns across Soroswap and DeFindex",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npm run dev --prefix frontend",
+    "build": "npm run build --prefix frontend",
+    "start": "npm run start --prefix frontend",
+    "test": "npm run test:contracts && npm run test:frontend",
+    "test:contracts": "cd contracts && cargo test",
+    "test:frontend": "npm run test --prefix frontend",
+    "test:e2e": "cd tests/e2e && npx playwright test",
+    "deploy:testnet": "cd scripts/deploy && node deploy-testnet.js",
+    "setup:testnet": "cd scripts/testnet && node setup-accounts.js",
+    "test:soroswap": "node scripts/soroswap-integration.js",
+    "contracts:build": "cd contracts && cargo build",
+    "contracts:deploy": "cd contracts && soroban contract deploy",
+    "lint": "npm run lint --prefix frontend",
+    "format": "cd contracts && cargo fmt && npm run format --prefix frontend",
+    "progress": "./scripts/check-progress.sh",
+    "progress:full": "cat PROGRESS.md"
+  },
+  "keywords": [
+    "stellar",
+    "soroban",
+    "defi",
+    "yield-farming",
+    "cross-chain",
+    "soroswap",
+    "defindex"
+  ],
+  "author": "Yieldway Team",
+  "license": "MIT",
+  "workspaces": [
+    "frontend",
+    "scripts/*"
+  ],
+  "devDependencies": {
+    "@playwright/test": "^1.40.0"
+  },
+  "dependencies": {
+    "axios": "^1.11.0",
+    "dotenv": "^17.2.0"
+  }
+}

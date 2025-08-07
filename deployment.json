@@ -1,0 +1,50 @@
+{
+  "network": "testnet",
+  "rpcUrl": "https://soroban-testnet.stellar.org",
+  "networkPassphrase": "Test SDF Network ; September 2015",
+  "deployedAt": "2025-01-25T00:15:00.000Z",
+  "contracts": {
+    "factory": "CAAMWDCAELZ4OPHC7IA67THCRZZ3POKXFCSELMXU6WV7KNFRF6OCAIFE",
+    "uyt": "CBSA3AKJONECSP6LI4WJUVPTJO6HGEUDLUX6FJOHI2H34VAB2BPBZXQ2",
+    "router": "CCC5UULMUFFA5C7OQM2DTMPVHPDSGTWMUVSQOSP25RJL3WID6EWVKKX5"
+  },
+  "adminAccount": "GDNRX6CJLCPJSKKRQHHBZK2NLXJEOWHOADUVTR23OBOTWEHPYXXW2VPA",
+  "initialization": {
+    "factory": {
+      "status": "completed",
+      "admin": "GDNRX6CJLCPJSKKRQHHBZK2NLXJEOWHOADUVTR23OBOTWEHPYXXW2VPA"
+    },
+    "uyt": {
+      "status": "completed",
+      "router": "CCC5UULMUFFA5C7OQM2DTMPVHPDSGTWMUVSQOSP25RJL3WID6EWVKKX5",
+      "admin": "GDNRX6CJLCPJSKKRQHHBZK2NLXJEOWHOADUVTR23OBOTWEHPYXXW2VPA",
+      "name": "Yieldway Universal Yield Token",
+      "symbol": "UYT"
+    },
+    "router": {
+      "status": "completed",
+      "admin": "GDNRX6CJLCPJSKKRQHHBZK2NLXJEOWHOADUVTR23OBOTWEHPYXXW2VPA",
+      "soroswapRouter": "GDNRX6CJLCPJSKKRQHHBZK2NLXJEOWHOADUVTR23OBOTWEHPYXXW2VPA",
+      "defindexFactory": "GDNRX6CJLCPJSKKRQHHBZK2NLXJEOWHOADUVTR23OBOTWEHPYXXW2VPA",
+      "feeRate": 250
+    }
+  },
+  "soroswap": {
+    "stagingApiUrl": "https://soroswap-api-staging-436722401508.us-central1.run.app",
+    "apiKey": "sk_e2acb3e0b5248f286023ef7ce9a5cde7e087c12579ae85fb3e9e318aeb11c6ce",
+    "network": "testnet"
+  },
+  "explorerLinks": {
+    "factory": "https://stellar.expert/explorer/testnet/contract/CAAMWDCAELZ4OPHC7IA67THCRZZ3POKXFCSELMXU6WV7KNFRF6OCAIFE",
+    "uyt": "https://stellar.expert/explorer/testnet/contract/CBSA3AKJONECSP6LI4WJUVPTJO6HGEUDLUX6FJOHI2H34VAB2BPBZXQ2",
+    "router": "https://stellar.expert/explorer/testnet/contract/CCC5UULMUFFA5C7OQM2DTMPVHPDSGTWMUVSQOSP25RJL3WID6EWVKKX5",
+    "adminAccount": "https://stellar.expert/explorer/testnet/account/GDNRX6CJLCPJSKKRQHHBZK2NLXJEOWHOADUVTR23OBOTWEHPYXXW2VPA"
+  },
+  "nextSteps": [
+    "Test contract functionality with sample transactions",
+    "Integrate with Soroswap staging API for real liquidity",
+    "Test deposit and withdrawal flows",
+    "Build frontend integration",
+    "Run end-to-end testing scenarios"
+  ]
+} 
